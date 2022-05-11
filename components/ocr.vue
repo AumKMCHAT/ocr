@@ -10,7 +10,10 @@
       <canvas id="imgCanvas" ref="imgCanvas"></canvas>
     </div>
     status: 
-    {{ status }}
+    {{ status }} <br>
+
+    message:
+    {{ message }}
   </div>
 </template>
 
@@ -22,13 +25,15 @@ export default {
     return {
       dataUrl: "",
       status: "",
+      message: "",
     };
   },
 
+  created() {
+    this.$root.$refs.ocr = this;
+  },
+
   methods: {
-    ocr: function (event) {
-      Tesseract.recognize(event.path);
-    },
 
     submit() {
       var self = this;
@@ -56,14 +61,14 @@ export default {
       ctx.drawImage(img, 0, 0);
       this.dataUrl = canvas.toDataURL();
       this.status = "reading";
-      console.log(this.dataUrl)
       Tesseract.recognize(this.dataUrl, "eng", {
         logger: log => {
           console.log(log);
         },
       })
         .then(result => {
-          alert(result.data.text);
+          
+          this.message = result.data.text;
           vm.status = "";
           this.status = "complete";
         })
