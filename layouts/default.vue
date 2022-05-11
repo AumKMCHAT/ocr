@@ -5,7 +5,7 @@
       fixed
       app
     >
-    <v-toolbar-title>OCR Container</v-toolbar-title>
+    <v-toolbar-title>OCR Web</v-toolbar-title>
     </v-app-bar>
     <v-main>
       <v-container>

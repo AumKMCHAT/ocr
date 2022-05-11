@@ -1,24 +1,15 @@
 <template>
   <div class="container">
-    <div class="upload">
-      <v-file-input
-        label="File input"
-        filled
-        prepend-icon="mdi-camera"
-        @change="submit"
-      />
-<<<<<<< HEAD
-      <canvas class="my-4" id="imgCanvas" ref="imgCanvas"></canvas>
-    </div>
     <v-col>
     status: 
     {{ status }} <br>
 
     message:
     {{ message }}
+    <div class="center"><v-btn class="my-6" fab dark large color="blue" id="snap" @click="capture()"><v-icon>mdi-camera</v-icon></v-btn></div>
     <div>
-      <video ref="video" id="video" width="640" height="480" autoplay></video>
-      <button id="snap" @click="capture()">Snap Photo</button>
+      <video ref="video" id="video" width="480" height="320" autoplay></video>
+      <canvas id="imgCanvas" width="480" height="320" ref="imgCanvas"></canvas>
     </div>
     </v-col>
   </div>
@@ -94,7 +85,7 @@ export default {
       this.canvas = this.$refs.imgCanvas;
       var context = this.canvas
         .getContext("2d")
-        .drawImage(this.video, 0, 0, 640, 480);
+        .drawImage(this.video, 0, 0, 480, 320);
 
       var canvas = document.getElementById("imgCanvas");
       console.log(canvas)
