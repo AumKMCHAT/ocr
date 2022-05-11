@@ -1,12 +1,10 @@
 <template>
-  <div id="el">
-    <div>
-      <video ref="video" id="video" width="640" height="480" autoplay></video>
+  <div>
+    <div class="center"><v-btn class="my-6" fab dark large color="blue" id="snap" @click="capture()"><v-icon>mdi-camera</v-icon></v-btn></div><div>
+      <p>Camera</p><video ref="video" id="video" width="480" height="320" autoplay></video>
+      <canvas ref="canvas" id="canvas" width="480" height="320"></canvas>
     </div>
-    <div>
-      <button id="snap" @click="capture()">Snap Photo</button>
-    </div>
-    <canvas ref="canvas" id="canvas" width="640" height="480"></canvas>
+    
   </div>
 </template>
 
@@ -36,7 +34,7 @@ export default {
       this.canvas = this.$refs.canvas;
       var context = this.canvas
         .getContext("2d")
-        .drawImage(this.video, 0, 0, 640, 480);
+        .drawImage(this.video, 0, 0, 480, 320);
 
       var canvas = document.getElementById("canvas");
 

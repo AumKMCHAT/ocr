@@ -7,10 +7,12 @@
         prepend-icon="mdi-camera"
         @change="submit"
       />
-      <canvas id="imgCanvas" ref="imgCanvas" width="640" height="480"></canvas>
+<<<<<<< HEAD
+      <canvas class="my-4" id="imgCanvas" ref="imgCanvas"></canvas>
     </div>
-    status:
-    {{ status }} <br />
+    <v-col>
+    status: 
+    {{ status }} <br>
 
     message:
     {{ message }}
@@ -18,6 +20,7 @@
       <video ref="video" id="video" width="640" height="480" autoplay></video>
       <button id="snap" @click="capture()">Snap Photo</button>
     </div>
+    </v-col>
   </div>
 </template>
 
