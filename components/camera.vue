@@ -3,7 +3,9 @@
     <div>
       <video ref="video" id="video" width="640" height="480" autoplay></video>
     </div>
-    <div><button id="snap" @click="capture()">Snap Photo</button></div>
+    <div>
+      <button id="snap" @click="capture()">Snap Photo</button>
+    </div>
     <canvas ref="canvas" id="canvas" width="640" height="480"></canvas>
   </div>
 </template>
@@ -46,7 +48,6 @@ export default {
         self.$root.$refs.ocr.drawImage(image);
       };
     },
-
   },
 };
 </script>

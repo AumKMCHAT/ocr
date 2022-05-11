@@ -7,13 +7,17 @@
         prepend-icon="mdi-camera"
         @change="submit"
       />
-      <canvas id="imgCanvas" ref="imgCanvas"></canvas>
+      <canvas id="imgCanvas" ref="imgCanvas" width="640" height="480"></canvas>
     </div>
-    status: 
-    {{ status }} <br>
+    status:
+    {{ status }} <br />
 
     message:
     {{ message }}
+    <div>
+      <video ref="video" id="video" width="640" height="480" autoplay></video>
+      <button id="snap" @click="capture()">Snap Photo</button>
+    </div>
   </div>
 </template>
 
@@ -26,15 +30,22 @@ export default {
       dataUrl: "",
       status: "",
       message: "",
+      video: {},
+      canvas: {},
     };
   },
-
-  created() {
-    this.$root.$refs.ocr = this;
+  mounted: function () {
+    this.video = this.$refs.video;
+    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+      navigator.mediaDevices
+        .getUserMedia({ video: true, audio: false })
+        .then((stream) => {
+          video.srcObject = stream;
+          this.video.play();
+        });
+    }
   },
-
   methods: {
-
     submit() {
       var self = this;
       var reader,
@@ -43,7 +54,7 @@ export default {
       reader.onload = (e) => {
         var img = new Image();
         img.onload = function () {
-          self.drawImage(img);
+          self.tesseract(img);
         };
         img.src = event.target.result;
       };
@@ -51,7 +62,7 @@ export default {
       reader.readAsDataURL(files[0]);
     },
 
-    drawImage(img) {
+    tesseract(img) {
       var vm = this;
       var canvas = this.$refs.imgCanvas;
       canvas.width = img.width;
@@ -62,18 +73,36 @@ export default {
       this.dataUrl = canvas.toDataURL();
       this.status = "reading";
       Tesseract.recognize(this.dataUrl, "eng", {
-        logger: log => {
+        logger: (log) => {
           console.log(log);
         },
       })
-        .then(result => {
-          
+        .then((result) => {
           this.message = result.data.text;
           vm.status = "";
           this.status = "complete";
         })
-        .catch(error => console.log(error))
+        .catch((error) => console.log(error))
         .finally(() => {});
+    },
+
+    capture() {
+      var self = this;
+      this.canvas = this.$refs.imgCanvas;
+      var context = this.canvas
+        .getContext("2d")
+        .drawImage(this.video, 0, 0, 640, 480);
+
+      var canvas = document.getElementById("imgCanvas");
+      console.log(canvas)
+
+      var image = new Image();
+      image.src = canvas.toDataURL();
+      document.getElementById("imgCanvas").appendChild(image);
+
+      image.onload = function () {
+        self.tesseract(image);
+      };
     },
   },
 };
