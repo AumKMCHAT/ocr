@@ -1,17 +1,21 @@
 <template>
   <div class="container">
-    <v-col>
-    status: 
-    {{ status }} <br>
+      <v-col class="font-weight-medium">
+         <div>
+          <video ref="video" id="video" width="480" height="320" autoplay></video>
+          <canvas class="mx-4" id="imgCanvas" width="480" height="320" ref="imgCanvas"></canvas>
+        </div>
+        <div class="center">
+          <v-btn class="my-6" fab dark large color="blue" id="snap" @click="capture()"><v-icon>mdi-camera</v-icon></v-btn>
+        </div>
+        <p class = "font_text">
+        status: 
+        {{ status }} <br>
 
-    message:
-    {{ message }}
-    <div class="center"><v-btn class="my-6" fab dark large color="blue" id="snap" @click="capture()"><v-icon>mdi-camera</v-icon></v-btn></div>
-    <div>
-      <video ref="video" id="video" width="480" height="320" autoplay></video>
-      <canvas id="imgCanvas" width="480" height="320" ref="imgCanvas"></canvas>
-    </div>
-    </v-col>
+        message:
+        {{ message }}
+        </p>
+      </v-col>
   </div>
 </template>
 
@@ -81,6 +85,7 @@ export default {
     },
 
     capture() {
+      this.progressBar = true;
       var self = this;
       this.canvas = this.$refs.imgCanvas;
       var context = this.canvas
@@ -97,7 +102,16 @@ export default {
       image.onload = function () {
         self.tesseract(image);
       };
+      this.progressBar = false;
     },
   },
 };
 </script>
+
+<style>
+.font_text {
+  font-size: 1.4em;
+  font-weight: 100;
+  text-transform: capitalize;
+}
+</style>

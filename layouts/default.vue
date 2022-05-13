@@ -1,11 +1,10 @@
 <template>
   <v-app dark>
     <v-app-bar
-      :clipped-left="clipped"
       fixed
       app
     >
-    <v-toolbar-title>OCR Web</v-toolbar-title>
+    <v-toolbar-title><v-icon>mdi-camera-iris</v-icon>  OCR Web</v-toolbar-title>
     </v-app-bar>
     <v-main>
       <v-container>
