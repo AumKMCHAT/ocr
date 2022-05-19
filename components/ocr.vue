@@ -7,22 +7,22 @@
         </div>
         <div class="center">
           <v-btn class="my-6" fab dark large color="blue" id="snap" @click="capture()"><v-icon>mdi-camera</v-icon></v-btn>
+          <v-progress-circular indeterminate color="red"></v-progress-circular>
         </div>
-        <p class = "font_text">
-        status: 
-        {{ status }} <br>
-
-        message:
-        {{ message }}
-        </p>
+        <div class="font_text">Container_id: {{containerId}}</div>
+        <div class="font_text">ISO: {{isoCode}}</div>
+        
       </v-col>
   </div>
 </template>
 
 <script>
 import Tesseract from "tesseract.js";
+import axios from 'axios';
+import FormData from 'form-data'
 
 export default {
+
   data() {
     return {
       dataUrl: "",
@@ -30,8 +30,11 @@ export default {
       message: "",
       video: {},
       canvas: {},
+      isoCode: '',
+      containerId: ''
     };
   },
+
   mounted: function () {
     this.video = this.$refs.video;
     if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
@@ -44,21 +47,6 @@ export default {
     }
   },
   methods: {
-    submit() {
-      var self = this;
-      var reader,
-        files = event.target.files;
-      var reader = new FileReader();
-      reader.onload = (e) => {
-        var img = new Image();
-        img.onload = function () {
-          self.tesseract(img);
-        };
-        img.src = event.target.result;
-      };
-
-      reader.readAsDataURL(files[0]);
-    },
 
     tesseract(img) {
       var vm = this;
@@ -84,8 +72,20 @@ export default {
         .finally(() => {});
     },
 
-    capture() {
-      this.progressBar = true;
+    dataURItoBlob(dataURI) {
+        var byteString = atob(dataURI.split(',')[1]);
+        var mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0]
+        var ab = new ArrayBuffer(byteString.length);
+        var ia = new Uint8Array(ab);
+        for (var i = 0; i < byteString.length; i++) {
+            ia[i] = byteString.charCodeAt(i);
+        }
+        var blob = new Blob([ab], {type: mimeString});
+        return blob;
+    },
+
+    async capture() {
+     
       var self = this;
       this.canvas = this.$refs.imgCanvas;
       var context = this.canvas
@@ -93,16 +93,26 @@ export default {
         .drawImage(this.video, 0, 0, 480, 320);
 
       var canvas = document.getElementById("imgCanvas");
-      console.log(canvas)
+      var dataURL = canvas.toDataURL();
+      var blob = self.dataURItoBlob(dataURL);
 
-      var image = new Image();
-      image.src = canvas.toDataURL();
-      document.getElementById("imgCanvas").appendChild(image);
+      let data = new FormData();
+      data.append('image', blob);
 
-      image.onload = function () {
-        self.tesseract(image);
-      };
-      this.progressBar = false;
+      axios
+        .post("http://127.0.0.1:8000/api/ocr", 
+          data
+        )
+        .then(function (response) {
+          console.log(response);
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+
+      const result = await axios.get(`http://127.0.0.1:8000/api/ocr`);
+      this.containerId = result.data[0]+result.data[1];
+      this.isoCode = result.data[2];
     },
   },
 };
@@ -113,5 +123,8 @@ export default {
   font-size: 1.4em;
   font-weight: 100;
   text-transform: capitalize;
+}
+.v-progress-circular {
+  margin: 1rem;
 }
 </style>
