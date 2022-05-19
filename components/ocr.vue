@@ -9,7 +9,7 @@
           <v-btn class="my-6" fab dark large color="white" id="snap" @click="capture()"><v-icon color="black">mdi-camera</v-icon></v-btn>
           <v-progress-circular v-show="loading" indeterminate color="white"></v-progress-circular>
         </div>
-        <div class="font_text">Container_id: {{containerId}}</div>
+        <div class="font_text">Container ID: {{containerId}}</div>
         <div class="font_text">ISO: {{isoCode}}</div>
         
       </v-col>
@@ -17,9 +17,7 @@
 </template>
 
 <script>
-import Tesseract from "tesseract.js";
 import axios from 'axios';
-import FormData from 'form-data'
 
 export default {
 
@@ -88,8 +86,8 @@ export default {
           this.loading = false;
         });
       const result = await axios.get(`http://127.0.0.1:8000/api/ocr`);
-      this.containerId = result.data[0]+result.data[1];
-      this.isoCode = result.data[2];
+      this.containerId = result.data[0]
+      this.isoCode = result.data[1];
       this.loading = false;
     },
   },
