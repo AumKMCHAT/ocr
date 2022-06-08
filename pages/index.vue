@@ -1,6 +1,7 @@
 <template>
   <div>
-  <ocr></ocr>
+  <!-- <ocr></ocr> -->
+  <google></google>
   </div>
   
 </template>
